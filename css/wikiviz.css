@@ -1,0 +1,45 @@
+/**************************************************************************************************************************************
+***************************************************************************************************************************************
+* Wiki User Activity Log Analyzer
+* Basic CSS formatting
+***************************************************************************************************************************************
+***************************************************************************************************************************************/
+
+h1, h2 {
+  font-family: Arial, Helvetica, sans-serif;        
+} 
+p, table {
+  font-family: Arial, Helvetica, sans-serif;        
+  border-spacing: 0px;      
+}
+td {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+button {
+  font-family: Arial, Helvetica, sans-serif;        
+  width: 225px; 
+  height: 55px; 
+  background-color: FEFEFE; 
+  border: 1px solid #A0A0A0;
+}
+.inputCell {
+  padding-left: 10px; 
+}
+.promptsTransition, .promptsFullUpdate, .changesBreakdown {
+  width: 15px;      
+}
+.changesDeptAreaChoices {
+  height: 495px;
+  width: 200px;  
+}
+.dateChooser {
+  border-width: 2px;
+  border-style: solid;
+  border-color: #A0A0A0;
+  padding: 3px; 
+}
+.axis path, .axis line {
+  fill: none;
+  stroke: lightgrey; 
+}

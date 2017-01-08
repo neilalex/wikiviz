@@ -1,0 +1,193 @@
+<!--
+Wiki User Activity Log Analyzer
+Primary HTML Interface
+
+Creates key HTML table structure, and loads wikiviz.js to generate the visualization
+
+For discussion, please see 
+http://www.neilalex.com/interactive-visualization-using-d3-js/
+
+Please contact me directly with questions or comments
+Neil Alexander McQuarrie
+neil@neilalex.com
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wiki User Activity Log Analyzer</title>
+  <script src="lib/d3.v3.min.js"></script>
+  <script src="lib/colorbrewer.js"></script>
+  <script src="lib/jquery-1.10.2.js"></script>
+  <script src="lib/jquery-ui.js"></script>  
+  <script src="utilities/loadScript.js"></script>
+  <link rel="stylesheet" href="css/jquery-ui.css">
+  <link rel="stylesheet" href="css/wikiviz.css">    
+</head>
+<body>
+  <table width="1200px", height="890">
+      <h2>Wiki User Activity Log Analyzer</h2>
+      <td valign="top" align="left" colspan="2" height="210px" style="padding-left:9px;">
+        
+        <!-- Data Loader Date Chooser -->
+        <table> 
+          <form name="dataWindow">
+          <tr valign="top">
+            <td >
+              <label><b>Load data starting:&nbsp;</b></label>                                
+            </td>
+            <td style="padding-left:5px;">
+              <label><input type="text" class="dateChooser" id="beginDateChooser"></label>                                
+            </td>
+            <td rowspan = 3 style="padding-left:5px;">
+              <button type="button" class = "promptsRefilter" style="height: 64px; width: 75px">Refresh Data</button>
+            </td>
+          </tr>
+          <tr valign="bottom">
+            <td>
+              <label><b>Load data stopping:&nbsp;</b></label>              
+            </td>
+            <td style="padding-left:5px;">
+              <label><input type="text" class="dateChooser" id="endDateChooser"></label>
+            </td>
+          </tr>
+          </form>
+        </table>   
+        <br/>
+        
+        <!-- Data manipulation user controls -->                   
+        <table>
+          <tr>
+          <form name="chartType">            
+            <td>
+              <label><b>Chart type:</b></label>
+            </td>
+            <td class="inputcell">
+              <label><input type="radio" name="relativeAbsolute" value="relative" class="promptsTransition" checked>relative</label>
+            </td>
+            <td class="inputcell">
+              <label><input type="radio" name="relativeAbsolute" value="absolute" class="promptsTransition">absolute</label>
+            </td>
+          </form>
+          </tr>
+          <tr>
+          <form name="timeBlocks">
+            <td><label><b>Time units:</b></label></td>
+            <td class="inputcell">
+              <label><input type="radio" name="tab" value="weekly" class="promptsFullUpdate">weekly</label>
+            </td>
+            <td class="inputcell">
+              <label><input type="radio" name="tab" value="monthly" class="promptsFullUpdate" checked>monthly</label>
+            </td>
+            <td class="inputcell">
+              <label><input type="radio" name="tab" value="yearly" class="promptsFullUpdate">yearly</label>
+            </td>
+          </form>
+          </tr>
+          <tr>
+          <form name="contentTypeOptions">
+            <td><label><b>Content types:</b></label></td>
+            <td class="inputcell">
+              <label><input type="checkbox" name="page" class="promptsTransition" checked>page</label>
+            </td>
+            <td class="inputcell">
+              <label><input type="checkbox" name="comment" class="promptsTransition" checked>comment</label>
+            </td>
+            <td class="inputcell">
+              <label><input type="checkbox" name="attachment" class="promptsTransition">attach</label>
+            </td>
+          </form>
+          </tr>
+          <tr>
+          <form name="activityOptions">
+            <td><label><b>Activity types:</b></label></td>                  
+            <td class="inputcell">
+              <label><input type="checkbox" name="create" class="promptsTransition" checked>create</label>
+            </td>                  
+            <td class="inputcell">
+              <label><input type="checkbox" name="update" class="promptsTransition" checked>update</label>
+            </td>                  
+            <td class="inputcell">
+              <label><input type="checkbox" name="read" class="promptsTransition" checked>read</label>
+            </td>            
+            <td class="inputcell">
+              <label><input type="checkbox" name="delete" class="promptsTransition"  checked>delete</label>
+            </td>
+          </form>
+          </tr>                
+          <tr>
+          <form name="breakdown">
+            <td><label><b>Breakdown by:</b></label></td>
+            <td class="inputcell">
+              <label><input type="radio" name="bars" value="departments" class="changesBreakdown" checked>dept</label>
+              </td>
+            <td class="inputcell">
+              <label><input type="radio" name="bars" value="areas" class="changesBreakdown">area</label>
+            </td>
+          </form>
+          </tr>
+        </table>
+      </td>
+      
+      <!-- Pie chart sub-visualizations -->
+      <td valign="top" width = "685px" height="252px" align="left" rowspan="2">
+        <table> 
+          <tr>    
+            <td height = "68px" width="250px" valign="top"><span id="subvis1textTop"></span></td>
+            <td height = "68px" width="250px" valign="top"><span id="subvis2textTop"></span></td>
+            <td height = "232px" rowspan="3" width="120px" valign="middle"><span id="subvisHelperText"></span></td>
+          </tr>
+          <tr>
+            <td height = "150px" width="250px" valign="middle"><span id="subvis1"></span></td>
+            <td height = "150px" width="250px" valign="middle"><span id="subvis2"></span></td>
+          </tr>
+          <tr>
+            <td height = "50px" width="250px" align="left" valign="top"><span id="subvis1textBottom"></span></td>
+            <td height = "50px" width="250px" align="left" valign="top"><span id="subvis2textBottom"></span></td>
+          </tr>
+        </table>
+      </td>
+    </tr>    
+    <tr>            
+        
+      <!-- Department and area multi-select boxes -->
+      <td valign="top" width="240px" rowspan="2" style="padding-left:9px;">                
+        <form name="deptAreaFilter">
+          <p style="margin-bottom:6px; margin-top:6px">
+            <label id="deptAreaLabel"><b>Choose departments:</b></label>
+          </p>                                    
+          <p style="margin-bottom:6px; margin-top:6px">
+            <select multiple class="changesDeptAreaChoices" name="departments" size=10>
+          </select>
+            <select multiple class="changesDeptAreaChoices" name="areas" size=10 style="display:none">
+          </select>                 
+          </p>
+          <p style="margin-bottom:6px; margin-top:6px">
+            <button type="button" class="changesDeptAreaSortAlpha">Sort choices alphabetically</button>
+          </p>
+          <p style="margin-bottom:6px; margin-top:6px">
+            <button type="button" class = "changesDeptAreaSortEvents">Sort choices by number of events meeting criteria</button>
+          </p>
+        </form>
+      </td>
+      <td></td>
+    </tr>
+    <tr>
+      
+      <!-- Stacked bar main visualization -->
+      <td width = "960px" valign="bottom" colspan="2">
+        <font color="red"><i><center>
+        <b><span id="progressNote" style="font-size:105%;" width="950px">Please wait while loading...</span></b>
+        <br/>
+        <span id="visText" style="font-size:95%;">&nbsp;</span>
+        </center></i></font>                
+        <div id="vis"></div>
+        <div id="belowVisText" style="font-size:93%"></div>
+      </td>
+    </tr>
+  </table>
+  
+  <!-- Generate visualizaionts and controls -->
+  <script src="./wikiviz.js"></script>  
+</body>
+</html>
