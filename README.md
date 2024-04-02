@@ -1,6 +1,6 @@
 # wikiviz
 
-Interactive visualization of user activity log data from a wiki site. To view a live/working version, see [http://www.neilalex.com/interactive-visualization-using-d3-js/](http://www.neilalex.com/interactive-visualization-using-d3-js/). 
+Interactive visualization of user activity log data from a wiki site.
 &nbsp;  
 #### Aspects
 
